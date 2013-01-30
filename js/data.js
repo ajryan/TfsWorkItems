@@ -7,6 +7,16 @@
     var projectList = new WinJS.Binding.List();
 
     var designMode = Windows.ApplicationModel.DesignMode.designModeEnabled;
+
+    WinJS.Namespace.define("Data", {
+        projects: projectList,
+        groupedProjects: projectList.createGrouped(getProjectGroupKey, getProjectGroupData, compareProjectGroups),
+        getProjects: getWebServiceProjects,
+        getWorkItemsFromProject: designMode ? generateSampleWorkItems : getWorkItemsFromProject,
+        processingEvent: "processingEvent",
+        processingStatus: false,
+        processingMessage: ""
+    });
     
     if (designMode) {
         generateSampleProjectList();
@@ -15,21 +25,14 @@
         getWebServiceProjects();
     }
 
-    WinJS.Namespace.define("Data", {
-        projects: projectList,
-        groupedProjects: projectList.createGrouped(getProjectGroupKey, getProjectGroupData, compareProjectGroups),
-        getProjects: getWebServiceProjects,
-        getWorkItemsFromProject: designMode? generateSampleWorkItems : getWorkItemsFromProject
-    });
-
     function getProjectGroupKey(dataItem) {
         return dataItem.CollectionName;
     }
-    
+
     function getProjectGroupData(dataItem) {
         return dataItem.CollectionName;
     }
-    
+
     function compareProjectGroups(left, right) {
         return left.toUpperCase().charCodeAt(0) - right.toUpperCase().charCodeAt(0);
     }
@@ -40,9 +43,13 @@
             projectList.pop();
         }
 
-        if (!Settings.tfsUrl)
+        if (!Settings.tfsUrl) {
+            Data.processingMessage = "Please open the Settings charm, select Connection, and enter your TFS server URL.";
             return;
-        
+        }
+
+        raiseProcessing(true, "Retrieving Team Projects list...");
+
         WinJS.xhr({
             type: "GET",
             url: apiBaseUrl + "/api/projects",
@@ -50,6 +57,7 @@
         })
         .done(
             function (result) {
+                raiseProcessing(false);
                 try {
                     var responseJson = JSON.parse(result.responseText);
                     responseJson.forEach(function (project) {
@@ -61,6 +69,7 @@
                 }
             },
             function (result) {
+                raiseProcessing(false);
                 var resultMessage = "Error connecting to TFS.";
 
                 if (result.responseText && result.responseText !== "") {
@@ -80,6 +89,8 @@
     function getWorkItemsFromProject(project) {
         // TODO: some kind of caching, this gets hit every time
         //       the screen rotates or app is nav'd
+        raiseProcessing(true, "Getting Work Items...");
+
         return new WinJS.Promise(function (complete, error, progress) {
             var workItemList = new WinJS.Binding.List();
 
@@ -94,41 +105,48 @@
                 url: urlWithParams,
                 headers: { TfsUrl: Settings.tfsUrl }
             })
-                .then(
-                    function (result) {
-                        var responseJson = JSON.parse(result.responseText);
-                        responseJson.forEach(function (workItem) {
-                            workItemList.push(workItem);
-                        });
-                    },
-                    function (result) {
-                        var msgDialog = new Windows.UI.Popups.MessageDialog("Error fetching work items.");
-                        msgDialog.showAsync();
-                    })
-                .done(
-                    function () {
-                        complete(workItemList);
+            .then(
+                function (result) {
+                    raiseProcessing(false);
+                    var responseJson = JSON.parse(result.responseText);
+                    responseJson.forEach(function (workItem) {
+                        workItemList.push(workItem);
                     });
-
+                },
+                function (result) {
+                    raiseProcessing(false);
+                    var msgDialog = new Windows.UI.Popups.MessageDialog("Error fetching work items.");
+                    msgDialog.showAsync();
+                })
+            .done(
+                function () {
+                    complete(workItemList);
+                });
         });
     }
 
+    function raiseProcessing(value, message) {
+        Data.processingStatus = value;
+        Data.processingMessage = message || "";
+        WinJS.Application.queueEvent({ type: Data.processingEvent, processing: value });
+    }
+
     function generateSampleWorkItems(project) {
-        return new WinJS.Promise(function(complete, error, progress) {
+        return new WinJS.Promise(function (complete, error, progress) {
             var sampleWorkItems = [
                 {
                     Id: 1,
-                    Title : "Work Item 1",
-                    Description : "Lorem ipsum stuff",
-                    AssignedTo : "John Smith",
+                    Title: "Work Item 1",
+                    Description: "Lorem ipsum stuff",
+                    AssignedTo: "John Smith",
                     WorkItemType: "Bug",
                     State: "Assigned"
                 },
                 {
                     Id: 2,
-                    Title : "Work Item 2",
-                    Description : "Four score and seven years",
-                    AssignedTo : "Susan Fredericks",
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
                     WorkItemType: "Requirement",
                     State: "Active"
                 }

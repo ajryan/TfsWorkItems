@@ -5,7 +5,10 @@
 
     WinJS.Namespace.define("Settings", {
         tfsUrl: initTfsUrl(),
-        setTfsUrl: function(newUrl) {
+        setTfsUrl: function (newUrl) {
+            if (this.tfsUrl == newUrl && (Data.processingStatus || Data.projects.length > 0))
+                return;
+            
             this.tfsUrl = newUrl;
             appData.localSettings.values["tfsUrl"] = newUrl;
             

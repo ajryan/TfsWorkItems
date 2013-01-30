@@ -1,6 +1,4 @@
-﻿// For an introduction to the Split template, see the following documentation:
-// http://go.microsoft.com/fwlink/?LinkID=232447
-(function () {
+﻿(function () {
     "use strict";
 
     WinJS.Binding.optimizeBindingReferences = true;
@@ -43,5 +41,16 @@
         WinJS.UI.SettingsFlyout.populateSettings(e);
     };
     
+    app.addEventListener(Data.processingEvent, showProcessing);
+    WinJS.Navigation.addEventListener("navigated", showProcessing);
+    
     app.start();
+    
+    function showProcessing() {
+        var topProgress = document.getElementById("topProgress");
+        topProgress && (topProgress.style.display = Data.processingStatus ? "block" : "none");
+
+        var processingMessage = document.getElementById("processingMessage");
+        processingMessage && (processingMessage.textContent = Data.processingMessage);
+    }
 })();

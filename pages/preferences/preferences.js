@@ -11,25 +11,31 @@
             }
             
             tfsUrlInput.addEventListener("blur", this._onTfsUrlBlur, false);
+            tfsUrlInput.addEventListener("keyup", this._onTfsUrlKeyup, false);
         },
         unload: function() {
             
         },
         _onTfsUrlBlur: function() {
             var newUrl = this.value;
-            
-            var a = document.createElement('a');
-            a.href = newUrl;
-            
-            var validUrl = (a.protocol.toLowerCase().indexOf('http') === 0);
-            validUrl &= a.hostname && a.hostname.length > 1;
-            
-            if (validUrl) {
+            if (validUrl(newUrl)) {
                 Settings.setTfsUrl(newUrl);
             }
         },
-        _validUrl: function(url) {
-            return false;
+        _onTfsUrlKeyup: function(e) {
+            if (e.keyCode == 13 && validUrl(this.value)) {
+                Settings.setTfsUrl(this.value);
+            }
         }
     });
+    
+    function validUrl(url) {
+        var a = document.createElement('a');
+        a.href = url;
+
+        var isValid = (a.protocol.toLowerCase().indexOf('http') === 0);
+        isValid &= a.hostname && a.hostname.length > 1;
+            
+        return isValid;
+    }
 })();

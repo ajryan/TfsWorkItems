@@ -8,33 +8,13 @@
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
-            
-            this._setNoConnText();
-            
+
             var listView = element.querySelector(".itemslist").winControl;
             listView.itemDataSource = Data.groupedProjects.dataSource;
             listView.groupDataSource = Data.groupedProjects.groups.dataSource;
             listView.itemTemplate = element.querySelector(".itemtemplate");
             listView.oniteminvoked = this._itemInvoked.bind(this);
             
-            // TODO: these two handlers should instead listen to an event
-            //       off of Data.statuschanged - can have values of
-            //       No Connection, Connecting, Connected
-            
-            Data.projects.oniteminserted = function (eventInfo) {
-                if (eventInfo.detail.index === 0) {
-                    document.getElementById("no-connection").style.display = "none";
-                }
-            };
-            
-            Data.projects.onitemremoved = (function (eventInfo) {
-                if (eventInfo.detail.index === 0) {
-                    var noConnection = document.getElementById("no-connection");
-                    noConnection.style.display = "block";
-                    this._setNoConnText();
-                }
-            }).bind(this);
-
             this._initializeLayout(listView, Windows.UI.ViewManagement.ApplicationView.value);
             listView.element.focus();
         },
@@ -60,19 +40,6 @@
             }
         },
         
-        _setNoConnText: function() {
-            var noConnection = document.getElementById("no-connection");
-            if (Data.projects.length > 0) {
-                noConnection.style.display = "none";
-            }
-            else {
-                noConnection.style.display = "block";
-                noConnection.textContent = (Settings.tfsUrl)
-                    ? "Attempting to load project list..."
-                    : "Please open the Settings charm, select Connection, and enter your TFS server URL.";
-            }
-        },
-
         // This function updates the ListView with new layouts
         _initializeLayout: function (listView, viewState) {
             /// <param name="listView" value="WinJS.UI.ListView.prototype" />

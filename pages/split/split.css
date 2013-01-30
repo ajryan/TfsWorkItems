@@ -100,6 +100,7 @@
 
         .splitpage .articlesection .article-content {
             overflow-y: auto;
+            white-space: pre;
         }
 
             .splitpage .articlesection .article-content p {
