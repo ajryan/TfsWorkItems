@@ -42,6 +42,6 @@
         e.detail.applicationcommands = { "connection": { title: "Connection", href: "/pages/preferences/preferences.html" } };
         WinJS.UI.SettingsFlyout.populateSettings(e);
     };
-
+    
     app.start();
 })();

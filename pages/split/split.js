@@ -22,7 +22,13 @@
 
             // Store information about the group and selection that this page will
             // display.
-            self._project = options ? options.project : null;
+            self._project = options ? options.project : {
+                "CollectionName": "Magenic",
+                "CollectionId": "889d4b21-8b29-481c-bd25-ebf63193fc9a",
+                "ProjectName": "Magenic - ChicagoTablet",
+                "ProjectUri": "vstfs:///Classification/TeamProject/f694cc49-94ff-44c2-bbaa-3396f5feb105"
+            };
+
             self._itemSelectionIndex = (options && "selectedIndex" in options) ? options.selectedIndex : -1;
             
             element.querySelector("header[role=banner] .pagetitle").textContent = self._project.ProjectName;

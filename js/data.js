@@ -1,28 +1,52 @@
 ﻿(function () {
     "use strict";
 
+    // TODO: inject API service URL from settings
+    //var apiBaseUrl = "https://teststepseditor.apphb.com";
+    var apiBaseUrl = "https://localhost:44300/";
     var projectList = new WinJS.Binding.List();
+
+    var designMode = Windows.ApplicationModel.DesignMode.designModeEnabled;
     
-    if (Windows.ApplicationModel.DesignMode.designModeEnabled) {
-        generateSampleData();
+    if (designMode) {
+        generateSampleProjectList();
     }
     else {
-        getWebServiceData();
+        getWebServiceProjects();
     }
-    
+
     WinJS.Namespace.define("Data", {
         projects: projectList,
-        getWorkItemsFromProject: getWorkItemsFromProject
+        groupedProjects: projectList.createGrouped(getProjectGroupKey, getProjectGroupData, compareProjectGroups),
+        getProjects: getWebServiceProjects,
+        getWorkItemsFromProject: designMode? generateSampleWorkItems : getWorkItemsFromProject
     });
 
+    function getProjectGroupKey(dataItem) {
+        return dataItem.CollectionName;
+    }
+    
+    function getProjectGroupData(dataItem) {
+        return dataItem.CollectionName;
+    }
+    
+    function compareProjectGroups(left, right) {
+        return left.toUpperCase().charCodeAt(0) - right.toUpperCase().charCodeAt(0);
+    }
+
     // Populates projectList with data from the TFS proxy service
-    function getWebServiceData() {
-        // TODO: inject service URL from settings
-        // TODO: get TfsUrl from app settings
+    function getWebServiceProjects() {
+        while (projectList.length > 0) {
+            projectList.pop();
+        }
+
+        if (!Settings.tfsUrl)
+            return;
+        
         WinJS.xhr({
             type: "GET",
-            url: "https://teststepseditor.apphb.com/api/projects",
-            headers: { TfsUrl: "https://tfs2010.magenic.com/tfs/" }
+            url: apiBaseUrl + "/api/projects",
+            headers: { TfsUrl: Settings.tfsUrl }
         })
         .done(
             function (result) {
@@ -31,7 +55,7 @@
                     responseJson.forEach(function (project) {
                         projectList.push(project);
                     });
-                } catch(e) {
+                } catch (e) {
                     var msgDialog = new Windows.UI.Popups.MessageDialog("Error parsing service result.");
                     msgDialog.showAsync();
                 }
@@ -43,16 +67,16 @@
                     try {
                         var responseJson = JSON.parse(result.responseText);
                         resultMessage += "\r\n" + result.statusText + " - " + responseJson.Message;
-                    } catch(e) {
+                    } catch (e) {
                     }
                 }
-                    
+
                 var msgDialog = new Windows.UI.Popups.MessageDialog(resultMessage);
                 msgDialog.showAsync();
             }
         );
     }
-    
+
     function getWorkItemsFromProject(project) {
         // TODO: some kind of caching, this gets hit every time
         //       the screen rotates or app is nav'd
@@ -60,12 +84,16 @@
             var workItemList = new WinJS.Binding.List();
 
             var urlWithParams =
-                "https://teststepseditor.apphb.com/api/workitems?collectionId=" +
+                apiBaseUrl + "/api/workitems?collectionId=" +
                 encodeURIComponent(project.CollectionId) +
                 "&projectName=" +
                 encodeURIComponent(project.ProjectName);
 
-            WinJS.xhr({ type: "GET", url: urlWithParams })
+            WinJS.xhr({
+                type: "GET",
+                url: urlWithParams,
+                headers: { TfsUrl: Settings.tfsUrl }
+            })
                 .then(
                     function (result) {
                         var responseJson = JSON.parse(result.responseText);
@@ -78,14 +106,44 @@
                         msgDialog.showAsync();
                     })
                 .done(
-                    function() {
+                    function () {
                         complete(workItemList);
                     });
-            
+
         });
     }
-    
-    function generateSampleData() {
+
+    function generateSampleWorkItems(project) {
+        return new WinJS.Promise(function(complete, error, progress) {
+            var sampleWorkItems = [
+                {
+                    Id: 1,
+                    Title : "Work Item 1",
+                    Description : "Lorem ipsum stuff",
+                    AssignedTo : "John Smith",
+                    WorkItemType: "Bug",
+                    State: "Assigned"
+                },
+                {
+                    Id: 2,
+                    Title : "Work Item 2",
+                    Description : "Four score and seven years",
+                    AssignedTo : "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                }
+            ];
+
+            var workItemList = new WinJS.Binding.List();
+            sampleWorkItems.forEach(function (workItem) {
+                workItemList.push(workItem);
+            });
+
+            complete(workItemList);
+        });
+    }
+
+    function generateSampleProjectList() {
         var sampleProjects = [
             {
                 "CollectionName": "Magenic",

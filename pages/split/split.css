@@ -38,15 +38,17 @@
                 }
 
             .splitpage .itemlistsection .itemlist .item {
-                -ms-grid-columns: 110px 1fr;
-                -ms-grid-rows: 1fr;
-                display: -ms-grid;
-                height: 110px;
-                width: 500px;
+                -ms-grid-columns: 80px 1fr;
+				display: -ms-grid;
+                height: 80px;
+                width: 400px;
             }
 
-                .splitpage .itemlistsection .itemlist .item .item-info {
-                    -ms-grid-column: 2;
+				.splitpage .itemlistsection .itemlist .item .item-id {
+					-ms-grid-column: 1;
+				}
+				.splitpage .itemlistsection .itemlist .item .item-info {
+					-ms-grid-column: 2;
                     margin-left: 10px;
                     margin-right: 10px;
                     overflow: hidden;
@@ -57,12 +59,11 @@
                     }
 
                     .splitpage .itemlistsection .itemlist .item .item-info .item-subtitle {
-                        opacity: 0.6;
+                        opacity: 0.8;
                     }
 
                     .splitpage .itemlistsection .itemlist .item .item-info .item-description {
-                        max-height: 60px;
-                        overflow: hidden;
+						opacity: 0.6;
                     }
 
     .splitpage .articlesection {
@@ -77,8 +78,8 @@
     }
 
         .splitpage .articlesection header {
-            -ms-grid-columns: 180px 20px 1fr;
-            -ms-grid-rows: 180px;
+            -ms-grid-columns: 80px 20px 1fr;
+            -ms-grid-rows: 100px;
             display: -ms-grid;
             margin-bottom: 5px;
             margin-top: 60px;
@@ -92,9 +93,9 @@
                     margin-top: 4px;
                 }
 
-            .splitpage .articlesection header .article-image {
-                height: 180px;
-                width: 180px;
+            .splitpage .articlesection header .article-id {
+                height: 60px;
+                width: 80px;
             }
 
         .splitpage .articlesection .article-content {
@@ -117,7 +118,7 @@
             width: 282px;
         }
 
-            .splitpage .itemlistsection .itemlist .item .item-image {
+            .splitpage .itemlistsection .itemlist .item .item-id {
                 height: 60px;
                 width: 60px;
             }
@@ -153,7 +154,7 @@
                 width: 282px;
             }
 
-                .splitpage .itemlistsection .itemlist .item .item-image {
+                .splitpage .itemlistsection .itemlist .item .item-id {
                     height: 60px;
                     width: 60px;
                 }
@@ -191,9 +192,9 @@
                         overflow: hidden;
                     }
 
-                .splitpage .articlesection header .article-image {
-                    height: 160px;
-                    width: 242px;
+                .splitpage .articlesection header .article-id {
+                    height: 60px;
+                    width: 80px;
                 }
 
         .splitpage .itemlistsection, .splitpage .articlesection {

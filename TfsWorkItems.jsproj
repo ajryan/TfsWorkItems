@@ -54,17 +54,21 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <Content Include="css\default.css" />
+    <Content Include="images\badgelogo.png" />
     <Content Include="images\logo.png" />
     <Content Include="images\smalllogo.png" />
     <Content Include="images\splashscreen.png" />
     <Content Include="images\storelogo.png" />
+    <Content Include="images\widelogo.png" />
     <Content Include="js\data.js" />
     <Content Include="js\default.js" />
     <Content Include="js\navigator.js" />
-    <Content Include="pages\Connection-Settings.html" />
+    <Content Include="js\settings.js" />
     <Content Include="pages\items\items.css" />
     <Content Include="pages\items\items.html" />
     <Content Include="pages\items\items.js" />
+    <Content Include="pages\preferences\preferences.html" />
+    <Content Include="pages\preferences\preferences.js" />
     <Content Include="pages\split\split.css" />
     <Content Include="pages\split\split.html" />
     <Content Include="pages\split\split.js" />
