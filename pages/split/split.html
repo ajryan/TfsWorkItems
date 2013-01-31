@@ -15,17 +15,25 @@
     <script src="/pages/split/split.js"></script>
 </head>
 <body>
-    <!-- This template is used to display each item in the ListView declared below. -->
+    <!-- Template for Work Item nav list -->
     <div class="itemtemplate" data-win-control="WinJS.Binding.Template">
         <div class="item">
 			<div class="item-id"><h2 data-win-bind="textContent: Id"></h2></div>
             <div class="item-info">
-                <h3 class="item-title win-type-ellipsis" data-win-bind="textContent: Title"></h3>
+                <h3 class="item-title win-type-ellipsis"><span data-win-bind="textContent: WorkItemType"></span>: <span data-win-bind="textContent: Title"></span></h3>
                 <h4 class="item-subtitle win-type-ellipsis" data-win-bind="textContent: State"></h4>
                 <h6 class="item-description" data-win-bind="textContent: AssignedTo"></h6>
             </div>
         </div>
     </div>
+
+	<!-- Template for individual work item fields list -->
+	<div class="fieldtemplate" data-win-control="WinJS.Binding.Template">
+		<div class="fieldpair">
+			<div class="field-name win-type-ellipsis" data-win-bind="textContent: Name"></div>
+			<div class="field-value win-type-ellipsis" data-win-bind="textContent: Value"></div>
+		</div>
+	</div>
 
     <!-- The content that will be loaded and displayed. -->
     <div class="splitpage fragment">
@@ -39,21 +47,27 @@
             <div class="itemlist win-selectionstylefilled" 
                  aria-label="List of this Team Project's Work Items" 
                  data-win-control="WinJS.UI.ListView" 
-                 data-win-options="{ selectionMode: 'single', swipeBehavior: 'none', tapBehavior: 'toggleSelect' }">
+                 data-win-options="{itemTemplate:select('.itemtemplate'), selectionMode:'single', swipeBehavior:'none', tapBehavior:'toggleSelect'}">
             </div>
         </div>
         <div class="articlesection" aria-atomic="true" aria-label="Work Item detail column" aria-live="assertive">
-            <article>
-                <header class="header">
-                    <div class="text">
-                        <h2 class="article-title win-type-ellipsis" data-win-bind="textContent: Title"></h2>
-                        <h4 class="article-subtitle" data-win-bind="textContent: State"></h4>
-						<h6 class="article-subtitle" data-win-bind="textContent: AssignedTo"></h6>
-                    </div>
-                    <div class="article-id"><h2 data-win-bind="textContent: Id"></h2></div>
-                </header>
-                <div class="article-content"></div> <!-- content is set in code due to need to convert to static HTML -->
-            </article>
+            <header class="header">
+                <div class="article-id"><h2 data-win-bind="textContent: Id"></h2></div>
+				<div class="header-title"><h2 class="win-type-ellipsis"><span data-win-bind="textContent: WorkItemType"></span>: <span data-win-bind="textContent: Title"></span></h2></div>
+				<div class="header-left">
+					<h4 class="article-subtitle"><span data-win-bind="textContent: State"></span> (<span data-win-bind="textContent: Reason"></span>)</h4>
+					<h6 class="article-subtitle" data-win-bind="textContent: AssignedTo"></h6>
+				</div>
+				<div class="header-right">
+					<h4 class="article-subtitle" data-win-bind="textContent: Area"></h4>
+					<h6 class="article-subtitle" data-win-bind="textContent: Iteration"></h6>
+				</div>
+            </header>
+            <div class="article-content"></div> <!-- content is set in code due to need to convert to static HTML -->
+			<div class="workitem-history"></div>
+			<div class="article-fields">
+				<div class="article-field-list" data-win-control="WinJS.UI.ListView" data-win-options="{selectionMode:'none', swipeBehavior:'none', tapBehavior:'none'}"></div>
+			</div>
         </div>
     </div>
 </body>

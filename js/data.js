@@ -5,7 +5,9 @@
     //var apiBaseUrl = "https://teststepseditor.apphb.com";
     var apiBaseUrl = "https://localhost:44300/";
     var projectList = new WinJS.Binding.List();
-
+    var currentProjectUri = null;
+    var currentWorkItemList = null;
+    
     var designMode = Windows.ApplicationModel.DesignMode.designModeEnabled;
 
     WinJS.Namespace.define("Data", {
@@ -87,6 +89,12 @@
     }
 
     function getWorkItemsFromProject(project) {
+        if (project.ProjectUri === currentProjectUri) {
+            return new WinJS.Promise(function (complete) {
+                complete(currentWorkItemList);
+            });
+        }
+        
         // TODO: some kind of caching, this gets hit every time
         //       the screen rotates or app is nav'd
         raiseProcessing(true, "Getting Work Items...");
@@ -112,6 +120,8 @@
                     responseJson.forEach(function (workItem) {
                         workItemList.push(workItem);
                     });
+                    currentWorkItemList = workItemList;
+                    currentProjectUri = project.ProjectUri;
                 },
                 function (result) {
                     raiseProcessing(false);
@@ -135,12 +145,196 @@
         return new WinJS.Promise(function (complete, error, progress) {
             var sampleWorkItems = [
                 {
-                    Id: 1,
-                    Title: "Work Item 1",
-                    Description: "Lorem ipsum stuff",
-                    AssignedTo: "John Smith",
-                    WorkItemType: "Bug",
-                    State: "Assigned"
+                    "Id": 67,
+                    "Title": "A very important Project",
+                    "AssignedTo": "John Smith",
+                    "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ac dui at nulla molestie sollicitudin. Curabitur lorem eros, fringilla at ultrices eget, mollis ornare nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam magna leo, porta at pulvinar et, fringilla sit amet sem. Nunc justo eros, molestie eu tempor quis, mollis eu dui. Cras nec ipsum orci, ac dignissim elit. Suspendisse nunc libero, commodo at luctus ut, ultricies sed eros. Nullam et libero enim, non semper neque. Nunc placerat elementum sapien nec euismod. Sed vel sollicitudin odio. Ut suscipit lobortis molestie. Proin in odio a nibh eleifend tempus ac id nisl. Aliquam libero urna, consectetur sed ultricies in, auctor ut lacus. Vestibulum sollicitudin ultrices odio, eget imperdiet velit rutrum at. Pellentesque cursus quam sit amet tellus bibendum semper ut vel leo. Duis non sollicitudin turpis. Duis lobortis, nisl nec commodo rutrum, nunc felis pretium orci, mattis porta orci enim malesuada purus. Nunc eget massa nec ligula dictum aliquet ut iaculis sapien. Morbi vehicula aliquam mauris. Curabitur accumsan aliquam bibendum. In vestibulum condimentum sodales. Suspendisse potenti. Etiam ornare hendrerit nulla, vel placerat ipsum congue at. Nunc sit amet commodo quam. Donec eu arcu a elit tristique fermentum. Sed hendrerit metus a urna malesuada blandit. Nullam hendrerit venenatis risus a dictum. Pellentesque a risus sed velit pellentesque pulvinar quis sodales justo. Nulla dapibus mollis elit ut iaculis. Nunc ac dapibus lectus. Donec vitae augue diam. Suspendisse id nunc ligula, eu luctus massa. Nulla eu faucibus nisl. Aenean fermentum velit ac tellus commodo varius. Nunc molestie ultrices enim at faucibus. Nulla orci elit, ornare ac consectetur id, dignissim et nibh. Fusce non odio quam. Duis sit amet lectus dui. Nunc vel urna ante. Aliquam felis orci, faucibus ac molestie quis, gravida nec augue. Sed viverra augue at ligula lobortis at pharetra eros mattis. Phasellus consequat leo ut est malesuada id venenatis purus rhoncus. Aliquam elementum diam at nunc rhoncus placerat. Donec fringilla libero in metus mollis auctor. Morbi turpis lacus, aliquet ut malesuada id, ultrices a orci. In tincidunt, leo elementum tincidunt viverra, tortor ligula posuere magna, vel iaculis quam metus pulvinar massa. Vestibulum id felis eget lacus ullamcorper faucibus at nec purus. Fusce malesuada nisi id nibh dignissim ut placerat lacus egestas. Nunc ac nisi et odio mattis rhoncus et vitae ante. Vivamus in tortor sapien. Aenean convallis dictum molestie. Morbi a laoreet nisi. Sed velit nulla, dictum vehicula placerat quis, viverra ac metus.",
+                    "WorkItemType": "Project",
+                    "State": "Viable",
+                    "Reason": "New",
+                    "Area": "MagenicU-1",
+                    "Iteration": "MagenicU-1",
+                    "History": "Scrum Aggregation Service - A21 - Summation of the ESTIMATED hours for the Project. - A22 - Summation of the COMPLETED hours for the Project. - A23 - Summation of the REMAINING hours for the Project.",
+                    "CreatedDate": "2012-03-19T10:38:50.733-07:00",
+                    "ChangedDate": "2012-03-19T10:41:01.983-07:00",
+                    "OtherFields": [
+                        {
+                            "Name": "Title",
+                            "Value": ""
+                        },
+                        {
+                            "Name": "State",
+                            "Value": "Viable"
+                        },
+                        {
+                            "Name": "Rev",
+                            "Value": "2"
+                        },
+                        {
+                            "Name": "Changed By",
+                            "Value": "TFS2010Service"
+                        },
+                        {
+                            "Name": "Reason",
+                            "Value": "New"
+                        },
+                        {
+                            "Name": "Assigned To",
+                            "Value": ""
+                        },
+                        {
+                            "Name": "Work Item Type",
+                            "Value": "Project"
+                        },
+                        {
+                            "Name": "Created Date",
+                            "Value": "3/19/2012 10:38:50 AM"
+                        },
+                        {
+                            "Name": "Created By",
+                            "Value": "Andrew Kampa"
+                        },
+                        {
+                            "Name": "Template Version",
+                            "Value": "5.1.3"
+                        },
+                        {
+                            "Name": "Remaining Work",
+                            "Value": "0"
+                        },
+                        {
+                            "Name": "Description",
+                            "Value": ""
+                        },
+                        {
+                            "Name": "History",
+                            "Value": "Scrum Aggregation Service - A21 - Summation of the ESTIMATED hours for the Project. - A22 - Summation of the COMPLETED hours for the Project. - A23 - Summation of the REMAINING hours for the Project."
+                        },
+                        {
+                            "Name": "Related Link Count",
+                            "Value": "0"
+                        },
+                        {
+                            "Name": "History Date",
+                            "Value": "3/19/2012 10:41:01 AM"
+                        },
+                        {
+                            "Name": "Planned Velocity",
+                            "Value": "0"
+                        },
+                        {
+                            "Name": "Project Name",
+                            "Value": "Test Project"
+                        },
+                        {
+                            "Name": "Office",
+                            "Value": ""
+                        },
+                        {
+                            "Name": "Project Manager",
+                            "Value": ""
+                        },
+                        {
+                            "Name": "Actual Work",
+                            "Value": "0"
+                        },
+                        {
+                            "Name": "boolTestPlan",
+                            "Value": "No"
+                        },
+                        {
+                            "Name": "boolEngagementPlan",
+                            "Value": "No"
+                        },
+                        {
+                            "Name": "boolCharter",
+                            "Value": "No"
+                        },
+                        {
+                            "Name": "Project Tiers",
+                            "Value": "Consulting / MDC"
+                        },
+                        {
+                            "Name": "WO review",
+                            "Value": "No"
+                        },
+                        {
+                            "Name": "Internal Kickoff",
+                            "Value": "No"
+                        },
+                        {
+                            "Name": "ClientKickoff",
+                            "Value": "No"
+                        },
+                        {
+                            "Name": "Worksite Ready",
+                            "Value": "No"
+                        },
+                        {
+                            "Name": "CSAT to Marketing",
+                            "Value": "No"
+                        },
+                        {
+                            "Name": "Magenic Client Code",
+                            "Value": ""
+                        },
+                        {
+                            "Name": "Magenic Project Code",
+                            "Value": ""
+                        },
+                        {
+                            "Name": "Iteration Path",
+                            "Value": "MagenicU-1"
+                        },
+                        {
+                            "Name": "Iteration ID",
+                            "Value": "22"
+                        },
+                        {
+                            "Name": "External Link Count",
+                            "Value": "0"
+                        },
+                        {
+                            "Name": "Team Project",
+                            "Value": "MagenicU-1"
+                        },
+                        {
+                            "Name": "Hyperlink Count",
+                            "Value": "0"
+                        },
+                        {
+                            "Name": "Attached File Count",
+                            "Value": "0"
+                        },
+                        {
+                            "Name": "Node Name",
+                            "Value": "MagenicU-1"
+                        },
+                        {
+                            "Name": "Area Path",
+                            "Value": "MagenicU-1"
+                        },
+                        {
+                            "Name": "Revised Date",
+                            "Value": "1/1/9999 12:00:00 AM"
+                        },
+                        {
+                            "Name": "Changed Date",
+                            "Value": "3/19/2012 10:41:01 AM"
+                        },
+                        {
+                            "Name": "ID",
+                            "Value": "67"
+                        },
+                        {
+                            "Name": "Area ID",
+                            "Value": "22"
+                        },
+                        {
+                            "Name": "Authorized As",
+                            "Value": ""
+                        }
+                    ]
                 },
                 {
                     Id: 2,
