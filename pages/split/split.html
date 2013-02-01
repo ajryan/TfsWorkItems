@@ -8,6 +8,7 @@
     <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
     <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/animations.js"></script>
 
     <link href="/css/default.css" rel="stylesheet" />
     <link href="/pages/split/split.css" rel="stylesheet" />
@@ -53,22 +54,33 @@
         <div class="articlesection" aria-atomic="true" aria-label="Work Item detail column" aria-live="assertive">
             <header class="header">
                 <div class="article-id"><h2 data-win-bind="textContent: Id"></h2></div>
-				<div class="header-title"><h2 class="win-type-ellipsis"><span data-win-bind="textContent: WorkItemType"></span>: <span data-win-bind="textContent: Title"></span></h2></div>
-				<div class="header-left">
-					<h4 class="article-subtitle"><span data-win-bind="textContent: State"></span> (<span data-win-bind="textContent: Reason"></span>)</h4>
-					<h6 class="article-subtitle" data-win-bind="textContent: AssignedTo"></h6>
-				</div>
-				<div class="header-right">
-					<h4 class="article-subtitle" data-win-bind="textContent: Area"></h4>
-					<h6 class="article-subtitle" data-win-bind="textContent: Iteration"></h6>
-				</div>
+                <div class="header-title"><h2 class="win-type-ellipsis"><span data-win-bind="textContent: WorkItemType"></span>: <span data-win-bind="textContent: Title"></span></h2></div>
+                <div class="header-left">
+                    <h4 class="article-subtitle"><span data-win-bind="textContent: State"></span> (<span data-win-bind="textContent: Reason"></span>)</h4>
+                    <h6 class="article-subtitle" data-win-bind="textContent: AssignedTo"></h6>
+                </div>
+                <div class="header-right">
+                    <h4 class="article-subtitle" data-win-bind="textContent: Area"></h4>
+                    <h6 class="article-subtitle" data-win-bind="textContent: Iteration"></h6>
+                </div>
             </header>
             <div class="article-content"></div> <!-- content is set in code due to need to convert to static HTML -->
-			<div class="workitem-history"></div>
-			<div class="article-fields">
-				<div class="article-field-list" data-win-control="WinJS.UI.ListView" data-win-options="{selectionMode:'none', swipeBehavior:'none', tapBehavior:'none'}"></div>
-			</div>
+            <div class="workitem-history"></div>
+            <div class="article-fields">
+                <div class="article-field-list" data-win-control="WinJS.UI.ListView" data-win-options="{selectionMode:'none', swipeBehavior:'none', tapBehavior:'none'}"></div>
+            </div>
         </div>
     </div>
+    <div id="appbar" data-win-control="WinJS.UI.AppBar">
+        <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{id:'cmdPrev', label:'Previous Page', icon:'previous', section:'selection'}" type="button"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{id:'cmdNext', label:'Next Page', icon:'next', section:'selection'}" type="button"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{id:'cmdFilter', label:'Filter', icon:'filter', section:'selection'}" type="button"></button>
+    </div>
+	<div id="filterFlyout" data-win-control="WinJS.UI.Flyout" data-win-options="{anchor:'cmdFilterButton'}">
+	    <label for="workItemTypeSelect">Work Item Type</label>
+	    <select id="workItemTypeSelect">
+	        <option value="All">All</option>
+	    </select>
+	</div>
 </body>
 </html>

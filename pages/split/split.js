@@ -13,12 +13,15 @@
         _workItems: null,
         _project: null,
         _itemSelectionIndex: -1,
-        _otherFields: new WinJS.Binding.List(),
+        _pageNumber: 0,
+        /// <field type="WinJS.Binding.List" />
+        _otherFields: null,
+        _workItemTypeFilter: "All",
+
         // This function is called whenever a user navigates to this page. It
         // populates the page elements with the app's data.
         ready: function (element, options) {
             var self = this;
-            var listView = element.querySelector(".itemlist").winControl;
 
             // Store information about the group and selection that this page will
             // display.
@@ -26,47 +29,45 @@
                 "CollectionName": "Magenic",
                 "CollectionId": "889d4b21-8b29-481c-bd25-ebf63193fc9a",
                 "ProjectName": "Magenic - ChicagoTablet",
-                "ProjectUri": "vstfs:///Classification/TeamProject/f694cc49-94ff-44c2-bbaa-3396f5feb105"
+                "ProjectUri": "vstfs:///Classification/TeamProject/f694cc49-94ff-44c2-bbaa-3396f5feb105",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             };
 
             self._itemSelectionIndex = (options && "selectedIndex" in options) ? options.selectedIndex : -1;
 
             element.querySelector("header[role=banner] .pagetitle").textContent = self._project.ProjectName;
 
-            Data.getWorkItemsFromProject(self._project).done(function (workItems) {
-                self._workItems = workItems;
-
-                // Set up the work item ListView.
-                listView.itemDataSource = self._workItems.dataSource;
-                listView.itemTemplate = element.querySelector(".itemtemplate");
-                listView.onselectionchanged = self._selectionChanged.bind(self);
-                listView.layout = new ui.ListLayout();
-
-                // Set up the other fields ListView.
-                var otherFieldsList = document.querySelector(".article-field-list").winControl;
-                otherFieldsList.layout = new ui.ListLayout();
-                otherFieldsList.itemTemplate = document.querySelector(".fieldtemplate");
-
-                self._updateVisibility();
-
-                if (self._isSingleColumn()) {
-                    // Single-column
-                    if (self._itemSelectionIndex >= 0) {
-                        // For single-column detail view, load the article and change page title to Work Item title
-                        self._loadArticleDetails();
-                    }
-                } else {
-                    if (nav.canGoBack && nav.history.backStack[nav.history.backStack.length - 1].location === "/pages/split/split.html") {
-                        // Clean up the backstack to handle a user snapping, navigating
-                        // away, unsnapping, and then returning to this page.
-                        nav.history.backStack.pop();
-                    }
-                    // If this page has a selectionIndex, make that selection
-                    // appear in the ListView.
-                    listView.selection.set(Math.max(self._itemSelectionIndex, 0));
-                }
-
+            document.getElementById("cmdPrev").addEventListener("click", self._prevWorkItemPage.bind(this), false);
+            document.getElementById("cmdNext").addEventListener("click", self._nextWorkItemPage.bind(this), false);
+            document.getElementById("cmdFilter").addEventListener("click", function() {
+                var flyOut = document.getElementById("filterFlyout").winControl;
+                flyOut.show(this, "top");
             });
+            
+            // fill the work item type select with the available types and listen for selection
+            var select = document.getElementById("workItemTypeSelect");
+            self._project.WorkItemTypes.forEach(function (workItemType) {
+                var option = document.createElement("option");
+                option.textContent = workItemType;
+                option.value = workItemType;
+                select.add(option);
+            });
+            select.onchange = function (event) {
+                var currentValue = this.value;
+                self._pageNumber = 0;
+                self._workItemTypeFilter = currentValue;
+                self._getWorkItems();
+            };
+            
+            var workItemListViewport = element.querySelector(".itemlist .win-viewport");
+            workItemListViewport.onscroll = function (event) {
+                // when scrolled to the bottom, show the appbar to indicate ability to page
+                if (this.scrollTop == (this.scrollHeight - this.offsetHeight)) {
+                    document.getElementById("appbar").winControl.show();
+                }
+            };
+            
+            self._getWorkItems();
         },
 
         unload: function () {
@@ -126,6 +127,61 @@
             }
         },
 
+        _prevWorkItemPage: function () {
+            document.getElementById("appbar").winControl.hide();
+            this._itemSelectionIndex = -1;
+            this._pageNumber = Math.max(0, this._pageNumber - 1);
+            this._getWorkItems();
+        },
+        
+        _nextWorkItemPage: function () {
+            document.getElementById("appbar").winControl.hide();
+            this._itemSelectionIndex = -1;
+            this._pageNumber++;
+            this._getWorkItems();
+        },
+        
+        _getWorkItems: function() {
+            var self = this;
+        
+            // fade detail UI while loading
+            WinJS.UI.Animation.fadeOut([[document.querySelector(".articlesection")], [document.querySelector(".itemlistsection")]]);
+            
+            var listView = document.querySelector(".itemlist").winControl;
+
+            Data.getWorkItemsFromProject(self._project, self._pageNumber, self._workItemTypeFilter).then(function (workItems) {
+                self._workItems = workItems;
+                
+                // Set up the work item ListView.
+                listView.itemDataSource = self._workItems.dataSource;
+                listView.itemTemplate = document.querySelector(".itemtemplate");
+                listView.onselectionchanged = self._selectionChanged.bind(self);
+                listView.layout = new ui.ListLayout();
+
+                self._updateVisibility();
+
+                if (self._isSingleColumn()) {
+                    // Single-column
+                    if (self._itemSelectionIndex >= 0) {
+                        // For single-column detail view, load the article and change page title to Work Item title
+                        self._loadArticleDetails();
+                        WinJS.UI.Animation.fadeIn([[document.querySelector(".articlesection")], [document.querySelector(".itemlistsection")]]);
+                    }
+                } else {
+                    if (nav.canGoBack && nav.history.backStack[nav.history.backStack.length - 1].location === "/pages/split/split.html") {
+                        // Clean up the backstack to handle a user snapping, navigating
+                        // away, unsnapping, and then returning to this page.
+                        nav.history.backStack.pop();
+                    }
+                    // If this page has a selectionIndex, make that selection
+                    // appear in the ListView.
+                    listView.selection.set(Math.max(self._itemSelectionIndex, 0));
+                    WinJS.UI.Animation.fadeIn(document.querySelector(".itemlistsection")); // selection change did enterContent on the articlesection
+                }
+            });
+            
+        },
+        
         // This function checks if the list and details columns should be displayed
         // on separate pages instead of side-by-side.
         _isSingleColumn: function () {
@@ -146,7 +202,9 @@
                         nav.navigate("/pages/split/split.html", { project: self._project, selectedIndex: self._itemSelectionIndex });
                     } else {
                         // If fullscreen or filled, update the details column with new data.
+                        WinJS.UI.Animation.exitPage(document.querySelector(".articlesection"));
                         self._loadArticleDetails();
+                        WinJS.UI.Animation.enterPage(document.querySelector(".articlesection"));
                     }
                 }
             });
@@ -155,14 +213,12 @@
         _loadArticleDetails: function () {
             var workItem = this._workItems.getAt(this._itemSelectionIndex);
 
-            // in single-column, show the work item title as 
+            // in single-column, show the work item title as page title
             if (this._isSingleColumn()) {
                 var pageTitle = workItem.Title;
                 document.querySelector("header[role=banner] .pagetitle").textContent = pageTitle;
             }
             
-            var articleDiv = document.querySelector(".articlesection");
-
             // special case for Description and History with HTML content
             var descriptionDiv = document.querySelector(".article-content");
             if (workItem.Description.toLowerCase().indexOf("</p>") > -1) {
@@ -174,14 +230,17 @@
             historyDiv.textContent = window.toStaticHTML(workItem.History);
 
             // re-bind other fields list with currently-selected work item
-            var fieldListView = document.querySelector(".article-field-list").winControl;
+            var otherFieldsList = document.querySelector(".article-field-list").winControl;
+            otherFieldsList.layout = new ui.ListLayout();
+            otherFieldsList.itemTemplate = document.querySelector(".fieldtemplate");
             this._otherFields = new WinJS.Binding.List(workItem.OtherFields);
-            fieldListView.itemDataSource = this._otherFields.dataSource;
+            otherFieldsList.itemDataSource = this._otherFields.dataSource;
 
+            var articleDiv = document.querySelector(".articlesection");
             binding.processAll(articleDiv, workItem);
-
             articleDiv.scrollTop = 0;
         },
+        
         // This function toggles visibility of the two columns based on the current
         // view state and item selection.
         _updateVisibility: function () {

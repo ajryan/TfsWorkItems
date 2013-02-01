@@ -7,6 +7,8 @@
     var projectList = new WinJS.Binding.List();
     var currentProjectUri = null;
     var currentWorkItemList = null;
+    var currentPageNumber = 0;
+    var currentWorkItemType = "All";
     
     var designMode = Windows.ApplicationModel.DesignMode.designModeEnabled;
 
@@ -88,8 +90,8 @@
         );
     }
 
-    function getWorkItemsFromProject(project) {
-        if (project.ProjectUri === currentProjectUri) {
+    function getWorkItemsFromProject(project, pageNumber, workItemTypeFilter) {
+        if (project.ProjectUri === currentProjectUri && currentPageNumber === pageNumber && currentWorkItemType === workItemTypeFilter) {
             return new WinJS.Promise(function (complete) {
                 complete(currentWorkItemList);
             });
@@ -106,7 +108,11 @@
                 apiBaseUrl + "/api/workitems?collectionId=" +
                 encodeURIComponent(project.CollectionId) +
                 "&projectName=" +
-                encodeURIComponent(project.ProjectName);
+                encodeURIComponent(project.ProjectName) +
+                "&page=" +
+                encodeURIComponent(pageNumber) +
+                "&workItemType=" +
+                encodeURIComponent(workItemTypeFilter);
 
             WinJS.xhr({
                 type: "GET",
@@ -120,6 +126,7 @@
                     responseJson.forEach(function (workItem) {
                         workItemList.push(workItem);
                     });
+                    currentPageNumber = pageNumber;
                     currentWorkItemList = workItemList;
                     currentProjectUri = project.ProjectUri;
                 },
@@ -141,8 +148,10 @@
         WinJS.Application.queueEvent({ type: Data.processingEvent, processing: value });
     }
 
-    function generateSampleWorkItems(project) {
+    function generateSampleWorkItems(project, pageNumber, workItemTypeFilter) {
         return new WinJS.Promise(function (complete, error, progress) {
+            raiseProcessing(true, "Getting work items...");
+            
             var sampleWorkItems = [
                 {
                     "Id": 67,
@@ -343,15 +352,162 @@
                     AssignedTo: "Susan Fredericks",
                     WorkItemType: "Requirement",
                     State: "Active"
+                },
+                {
+                    Id: 3,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 4,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 5,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 6,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 7,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 8,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 9,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 10,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 11,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 12,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 13,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 14,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 15,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 16,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 17,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 18,
+                    Title: "Work Item 2",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 19,
+                    Title: "Work Item 19",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
+                },
+                {
+                    Id: 20,
+                    Title: "Work Item 20",
+                    Description: "Four score and seven years",
+                    AssignedTo: "Susan Fredericks",
+                    WorkItemType: "Requirement",
+                    State: "Active"
                 }
             ];
 
             var workItemList = new WinJS.Binding.List();
-            sampleWorkItems.forEach(function (workItem) {
+            sampleWorkItems.slice(pageNumber * 10).forEach(function (workItem) {
                 workItemList.push(workItem);
             });
 
-            complete(workItemList);
+            setTimeout(function() {
+                raiseProcessing(false);
+                complete(workItemList);
+            }, 1000);
         });
     }
 
@@ -361,85 +517,99 @@
                 "CollectionName": "Magenic",
                 "CollectionId": "889d4b21-8b29-481c-bd25-ebf63193fc9a",
                 "ProjectName": "Magenic - ChicagoTablet",
-                "ProjectUri": "vstfs:///Classification/TeamProject/f694cc49-94ff-44c2-bbaa-3396f5feb105"
+                "ProjectUri": "vstfs:///Classification/TeamProject/f694cc49-94ff-44c2-bbaa-3396f5feb105",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Magenic",
                 "CollectionId": "889d4b21-8b29-481c-bd25-ebf63193fc9a",
                 "ProjectName": "Magenic TFS Template",
-                "ProjectUri": "vstfs:///Classification/TeamProject/eb03c322-de43-43c6-89f5-4f0a78e7f92c"
+                "ProjectUri": "vstfs:///Classification/TeamProject/eb03c322-de43-43c6-89f5-4f0a78e7f92c",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Magenic Training",
                 "CollectionId": "f5960793-c152-443e-bc91-faec65e9c597",
                 "ProjectName": "MagenicU-1",
-                "ProjectUri": "vstfs:///Classification/TeamProject/919b3352-4ee2-4437-a459-d9a5f9db95f4"
+                "ProjectUri": "vstfs:///Classification/TeamProject/919b3352-4ee2-4437-a459-d9a5f9db95f4",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Magenic Training",
                 "CollectionId": "f5960793-c152-443e-bc91-faec65e9c597",
                 "ProjectName": "MagenicU-2",
-                "ProjectUri": "vstfs:///Classification/TeamProject/8efbee03-6cd5-4791-811c-ec8115683aa6"
+                "ProjectUri": "vstfs:///Classification/TeamProject/8efbee03-6cd5-4791-811c-ec8115683aa6",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Magenic Training",
                 "CollectionId": "f5960793-c152-443e-bc91-faec65e9c597",
                 "ProjectName": "MagenicU-3",
-                "ProjectUri": "vstfs:///Classification/TeamProject/97c989a4-ccd9-4649-8eb5-cfd9679ccf2c"
+                "ProjectUri": "vstfs:///Classification/TeamProject/97c989a4-ccd9-4649-8eb5-cfd9679ccf2c",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Magenic Training",
                 "CollectionId": "f5960793-c152-443e-bc91-faec65e9c597",
                 "ProjectName": "MagenicU-4",
-                "ProjectUri": "vstfs:///Classification/TeamProject/5b0ed9a1-55c9-4ce7-887c-23b684b828b0"
+                "ProjectUri": "vstfs:///Classification/TeamProject/5b0ed9a1-55c9-4ce7-887c-23b684b828b0",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Magenic Training",
                 "CollectionId": "f5960793-c152-443e-bc91-faec65e9c597",
                 "ProjectName": "Training 01",
-                "ProjectUri": "vstfs:///Classification/TeamProject/3bcbf686-ca26-4dc3-9bf8-1cf1951dd60d"
+                "ProjectUri": "vstfs:///Classification/TeamProject/3bcbf686-ca26-4dc3-9bf8-1cf1951dd60d",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Project Center Sandbox",
                 "CollectionId": "4d47a0df-7931-428d-b124-ddab1cc5f145",
                 "ProjectName": "Chicago Training 1",
-                "ProjectUri": "vstfs:///Classification/TeamProject/3afcdcb7-0b08-42fa-a8ce-c68eddff76b6"
+                "ProjectUri": "vstfs:///Classification/TeamProject/3afcdcb7-0b08-42fa-a8ce-c68eddff76b6",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Project Center Sandbox",
                 "CollectionId": "4d47a0df-7931-428d-b124-ddab1cc5f145",
                 "ProjectName": "Chicago Training 2",
-                "ProjectUri": "vstfs:///Classification/TeamProject/5aeed7e3-b896-47af-ad56-2835b8577bc1"
+                "ProjectUri": "vstfs:///Classification/TeamProject/5aeed7e3-b896-47af-ad56-2835b8577bc1",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Project Center Sandbox",
                 "CollectionId": "4d47a0df-7931-428d-b124-ddab1cc5f145",
                 "ProjectName": "Chicago Training 3",
-                "ProjectUri": "vstfs:///Classification/TeamProject/7002a859-5820-4544-8955-a4a42329f908"
+                "ProjectUri": "vstfs:///Classification/TeamProject/7002a859-5820-4544-8955-a4a42329f908",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Project Center Sandbox",
                 "CollectionId": "4d47a0df-7931-428d-b124-ddab1cc5f145",
                 "ProjectName": "Chicago Training 4",
-                "ProjectUri": "vstfs:///Classification/TeamProject/18d80726-e3d1-45f7-a78f-689488ce5c15"
+                "ProjectUri": "vstfs:///Classification/TeamProject/18d80726-e3d1-45f7-a78f-689488ce5c15",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Project Center Sandbox",
                 "CollectionId": "4d47a0df-7931-428d-b124-ddab1cc5f145",
                 "ProjectName": "Chicago Training 5",
-                "ProjectUri": "vstfs:///Classification/TeamProject/397fa5ca-f825-4b6e-9679-a3c17c253c7a"
+                "ProjectUri": "vstfs:///Classification/TeamProject/397fa5ca-f825-4b6e-9679-a3c17c253c7a",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "Source Space",
                 "CollectionId": "c874ec4d-883f-4bbd-b924-62390511ec58",
                 "ProjectName": "RockyL",
-                "ProjectUri": "vstfs:///Classification/TeamProject/9f981f90-7e73-419f-9ece-c8978d7103dd"
+                "ProjectUri": "vstfs:///Classification/TeamProject/9f981f90-7e73-419f-9ece-c8978d7103dd",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             },
             {
                 "CollectionName": "VISA",
                 "CollectionId": "25ae8496-150f-40bf-8472-987ed04badd9",
                 "ProjectName": "RealTimeMessaging",
-                "ProjectUri": "vstfs:///Classification/TeamProject/1456b88f-01bc-4297-9b12-90a3b7faf5ff"
+                "ProjectUri": "vstfs:///Classification/TeamProject/1456b88f-01bc-4297-9b12-90a3b7faf5ff",
+                "WorkItemTypes": ["Bug", "Requirement", "User Story"]
             }
         ];
 
