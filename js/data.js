@@ -536,7 +536,7 @@
     var
         projectList = new WinJS.Binding.List(),
         designMode = Windows.ApplicationModel.DesignMode.designModeEnabled,
-        webDataService = new WebDataService("https://teststepseditor.apphb.com");
+        webDataService = new WebDataService("https://tfsproxy.apphb.com");
 
     WinJS.Namespace.define("Data", {
         projects: projectList,
