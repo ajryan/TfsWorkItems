@@ -16,16 +16,12 @@
     <script src="/pages/items/items.js"></script>
 </head>
 <body>
-    <!-- This template is used to display each item in the ListView declared below. -->
     <div class="itemtemplate" data-win-control="WinJS.Binding.Template">
         <div class="item">
-            <h4 class="item-title" data-win-bind="textContent: ProjectName"></h4>
+            <h4 class="workitem-title" data-win-bind="textContent: ProjectName"></h4>
         </div>
     </div>
 
-    <!-- TODO: DO THIS AS GROUPS by COLLECTIONNAME -->
-
-    <!-- The content that will be loaded and displayed. -->
     <div class="itemspage fragment">
         <header aria-label="Header content" role="banner">
             <button class="win-backbutton" aria-label="Back" disabled type="button"></button>

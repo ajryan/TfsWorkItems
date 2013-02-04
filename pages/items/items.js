@@ -5,8 +5,7 @@
     var ui = WinJS.UI;
 
     ui.Pages.define("/pages/items/items.html", {
-        // This function is called whenever a user navigates to this page. It
-        // populates the page elements with the app's data.
+
         ready: function (element, options) {
 
             var listView = element.querySelector(".itemslist").winControl;
@@ -19,7 +18,6 @@
             listView.element.focus();
         },
 
-        // This function updates the page layout in response to viewState changes.
         updateLayout: function (element, viewState, lastViewState) {
             /// <param name="element" domElement="true" />
 
@@ -40,7 +38,6 @@
             }
         },
         
-        // This function updates the ListView with new layouts
         _initializeLayout: function (listView, viewState) {
             /// <param name="listView" value="WinJS.UI.ListView.prototype" />
 

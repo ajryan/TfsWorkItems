@@ -9,14 +9,6 @@
 
     app.addEventListener("activated", function (args) {
         if (args.detail.kind === activation.ActivationKind.launch) {
-            if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
-                // TODO: This application has been newly launched. Initialize
-                // your application here.
-            } else {
-                // TODO: This application has been reactivated from suspension.
-                // Restore application state here.
-            }
-
             if (app.sessionState.history) {
                 nav.history = app.sessionState.history;
             }
@@ -41,8 +33,10 @@
         WinJS.UI.SettingsFlyout.populateSettings(e);
     };
     
-    app.addEventListener(Data.processingEvent, showProcessing);
-    WinJS.Navigation.addEventListener("navigated", showProcessing);
+    // show the processing progress bar and message, when the processing event
+    // is fired, or upon navigating in case processing began before nav
+    app.addEventListener(Data.processingEvent, showProcessing, false);
+    WinJS.Navigation.addEventListener("navigated", showProcessing, false);
     
     app.start();
     

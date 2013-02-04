@@ -2,35 +2,35 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>splitPage</title>
+    <title>Work Item List</title>
 
     <!-- WinJS references -->
     <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
     <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
-    <script src="//Microsoft.WinJS.1.0/js/animations.js"></script>
 
     <link href="/css/default.css" rel="stylesheet" />
     <link href="/pages/split/split.css" rel="stylesheet" />
     <script src="/js/data.js"></script>
+    <script src="/js/settings.js"></script>
     <script src="/pages/split/split.js"></script>
 </head>
 <body>
     <!-- Template for Work Item nav list -->
-    <div class="itemtemplate" data-win-control="WinJS.Binding.Template">
-        <div class="item">
-			<div class="item-id"><h2 data-win-bind="textContent: Id"></h2></div>
-            <div class="item-info">
-                <h3 class="item-title win-type-ellipsis"><span data-win-bind="textContent: WorkItemType"></span>: <span data-win-bind="textContent: Title"></span></h3>
-                <h4 class="item-subtitle win-type-ellipsis" data-win-bind="textContent: State"></h4>
-                <h6 class="item-description" data-win-bind="textContent: AssignedTo"></h6>
+    <div class="workitem-template" data-win-control="WinJS.Binding.Template">
+        <div class="workitem">
+			<div class="workitem-id"><h2 data-win-bind="textContent: Id"></h2></div>
+            <div class="workitem-info">
+                <h3 class="workitem-title win-type-ellipsis"><span data-win-bind="textContent: WorkItemType"></span>: <span data-win-bind="textContent: Title"></span></h3>
+                <h4 class="workitem-state win-type-ellipsis" data-win-bind="textContent: State"></h4>
+                <h6 class="workitem-assignedto win-type-ellipsis" data-win-bind="textContent: AssignedTo"></h6>
             </div>
         </div>
     </div>
 
 	<!-- Template for individual work item fields list -->
-	<div class="fieldtemplate" data-win-control="WinJS.Binding.Template">
-		<div class="fieldpair">
+	<div class="field-template" data-win-control="WinJS.Binding.Template">
+		<div class="field-pair">
 			<div class="field-name win-type-ellipsis" data-win-bind="textContent: Name"></div>
 			<div class="field-value win-type-ellipsis" data-win-bind="textContent: Value"></div>
 		</div>
@@ -44,32 +44,32 @@
                 <span class="pagetitle">Temp title</span>
             </h1>
         </header>
-        <div class="itemlistsection" aria-label="List column">
-            <div class="itemlist win-selectionstylefilled" 
+        <div class="workitem-list-section" aria-label="List column">
+            <div class="workitem-list win-selectionstylefilled" 
                  aria-label="List of this Team Project's Work Items" 
                  data-win-control="WinJS.UI.ListView" 
-                 data-win-options="{itemTemplate:select('.itemtemplate'), selectionMode:'single', swipeBehavior:'none', tapBehavior:'toggleSelect'}">
+                 data-win-options="{itemTemplate:select('.workitem-template'), selectionMode:'single', swipeBehavior:'none', tapBehavior:'toggleSelect'}">
             </div>
         </div>
-        <div class="articlesection" aria-atomic="true" aria-label="Work Item detail column" aria-live="assertive">
-            <header class="header">
-                <div class="article-id"><h2 data-win-bind="textContent: Id"></h2></div>
-                <div class="header-title"><h2 class="win-type-ellipsis"><span data-win-bind="textContent: WorkItemType"></span>: <span data-win-bind="textContent: Title"></span></h2></div>
+        <article class="workitem-detail-section" aria-atomic="true" aria-label="Work Item detail column" aria-live="assertive">
+            <header>
+                <div class="workitem-id"><h2 data-win-bind="textContent: Id"></h2></div>
+                <div class="workitem-title"><h2 class="win-type-ellipsis"><span data-win-bind="textContent: WorkItemType"></span>: <span data-win-bind="textContent: Title"></span></h2></div>
                 <div class="header-left">
-                    <h4 class="article-subtitle"><span data-win-bind="textContent: State"></span> (<span data-win-bind="textContent: Reason"></span>)</h4>
-                    <h6 class="article-subtitle" data-win-bind="textContent: AssignedTo"></h6>
+                    <h4 class="workitem-subtitle"><span data-win-bind="textContent: State"></span> (<span data-win-bind="textContent: Reason"></span>)</h4>
+                    <h6 class="workitem-subtitle" data-win-bind="textContent: AssignedTo"></h6>
                 </div>
                 <div class="header-right">
-                    <h4 class="article-subtitle" data-win-bind="textContent: Area"></h4>
-                    <h6 class="article-subtitle" data-win-bind="textContent: Iteration"></h6>
+                    <h4 class="workitem-subtitle" data-win-bind="textContent: Area"></h4>
+                    <h6 class="workitem-subtitle" data-win-bind="textContent: Iteration"></h6>
                 </div>
             </header>
-            <div class="article-content"></div> <!-- content is set in code due to need to convert to static HTML -->
+            <div class="workitem-description"></div> <!-- content is set in code due to need to convert to static HTML -->
             <div class="workitem-history"></div>
-            <div class="article-fields">
-                <div class="article-field-list" data-win-control="WinJS.UI.ListView" data-win-options="{selectionMode:'none', swipeBehavior:'none', tapBehavior:'none'}"></div>
+            <div class="workitem-otherfields">
+                <div class="workitem-field-list" data-win-control="WinJS.UI.ListView" data-win-options="{selectionMode:'none', swipeBehavior:'none', tapBehavior:'none'}"></div>
             </div>
-        </div>
+        </article>
     </div>
     <div id="appbar" data-win-control="WinJS.UI.AppBar">
         <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{id:'cmdPrev', label:'Previous Page', icon:'previous', section:'selection'}" type="button"></button>

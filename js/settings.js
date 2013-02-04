@@ -12,8 +12,7 @@
             this.tfsUrl = newUrl;
             appData.localSettings.values["tfsUrl"] = newUrl;
             
-            Data.getProjects();
-            // TODO: force navigation to the items page if we're not there
+            Data.loadProjects();
         }
     });
     

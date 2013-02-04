@@ -3,6 +3,18 @@
     width: 100%;
 }
 
+#topProgress {
+  position: absolute; 
+  top: 50%; 
+  left: 0;
+}
+
+#processingMessage {
+  position: absolute; 
+  bottom: 20px; 
+  right: 20px;
+}
+
 .fragment {
     /* Define a grid with rows for a banner and a body */
     -ms-grid-columns: 1fr;

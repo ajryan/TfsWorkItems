@@ -28,20 +28,6 @@
 		background: -ms-linear-gradient(top, #333333, #393939);
     }
 
-@media screen and (-ms-view-state: fullscreen-landscape), screen and (-ms-view-state: fullscreen-portrait), screen and (-ms-view-state: filled) {
-    .itemspage .itemslist .item .item-overlay {
-        background: rgba(0,0,0,0.65);
-    }
-
-        .itemspage .itemslist .item .item-overlay .item-title {
-            color: rgba(255,255,255,0.87);
-        }
-
-        .itemspage .itemslist .item .item-overlay .item-subtitle {
-            color: rgba(255,255,255,0.6);
-        }
-}
-
 @media screen and (-ms-view-state: fullscreen-landscape) and (-ms-high-contrast), screen and (-ms-view-state: fullscreen-portrait) and (-ms-high-contrast), screen and (-ms-view-state: filled) and (-ms-high-contrast) {
     .itemspage .itemslist .item .item-overlay {
         color: WindowText;

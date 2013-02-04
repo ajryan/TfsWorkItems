@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>TfsWorkItems</title>
+    <title>TFS Work Items</title>
 
     <!-- WinJS references -->
     <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
@@ -11,11 +11,6 @@
 
     <!-- TfsWorkItems references -->
     <link href="/css/default.css" rel="stylesheet" />
-    <!--
-        <script>
-            WinJS.Utilities.startLog();
-        </script>
-    -->
     <script src="/js/settings.js"></script>
     <script src="/js/data.js"></script>
     <script src="/js/default.js"></script>
@@ -23,7 +18,7 @@
 </head>
 <body>
     <div id="contenthost" data-win-control="Application.PageControlNavigator" data-win-options="{home: '/pages/items/items.html'}"></div>
-    <progress class="win-large" style="position: absolute; top: 50%; left: 0;" id="topProgress"></progress>
-    <div style="position: absolute; bottom: 20px; right: 20px;" id="processingMessage"></div>
+    <progress class="win-large" id="topProgress"></progress>
+    <div id="processingMessage"></div>
 </body>
 </html>
